@@ -10,7 +10,7 @@ def createLinkedList(elements):
     for element in reversed(elements):
         e = LinkedList(element)
         if res is not None:
-            res.next = e
+            e.next = res
         res = e
     return res
 
@@ -43,8 +43,9 @@ def removeDups(head):
         while r is not None:
             if n.data == r.data:
                 p.next = r.next
-            r.next = r.next
-            p.next = p.next
+            else:
+                p = p.next
+            r = r.next
         n = n.next
     return head
 

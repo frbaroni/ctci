@@ -1,26 +1,8 @@
 import unittest
-
-class LinkedList:
-    def __init__(s, value):
-        s.data = value
-        s.next = None
-
-def createLinkedList(elements):
-    res = None
-    for element in reversed(elements):
-        e = LinkedList(element)
-        if res is not None:
-            e.next = res
-        res = e
-    return res
+from mylist import LinkedList
 
 def toList(linkedList):
-    res = []
-    n = linkedList
-    while n is not None:
-        res.append(n.data)
-        n = n.next
-    return res
+    return linkedlist.toList()
         
 def kthToLast(head, k):
     n = head
@@ -39,25 +21,25 @@ class Playground(unittest.TestCase):
         A = [1, 2, 3]
         K = 1
         E = 3
-        self.assertEqual(kthToLast(createLinkedList(A), K), E)
+        self.assertEqual(kthToLast(LinkedList.create(A), K), E)
 
     def test_2(self):
         A = [1, 2, 3]
         K = 2
         E = 2
-        self.assertEqual(kthToLast(createLinkedList(A), K), E)
+        self.assertEqual(kthToLast(LinkedList.create(A), K), E)
 
     def test_3(self):
         A = [1, 2, 3]
         K = 3
         E = 1
-        self.assertEqual(kthToLast(createLinkedList(A), K), E)
+        self.assertEqual(kthToLast(LinkedList.create(A), K), E)
 
     def test_4(self):
         A = [1, 2, 3]
         K = 4
         E = None
-        self.assertEqual(kthToLast(createLinkedList(A), K), E)
+        self.assertEqual(kthToLast(LinkedList.create(A), K), E)
 
 
 if __name__ == '__main__':

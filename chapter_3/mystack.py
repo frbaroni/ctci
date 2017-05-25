@@ -13,3 +13,6 @@ class Stack:
             return self.data[-1:][0]
         else:
             return None
+
+    def size(self):
+        return len(self.data)

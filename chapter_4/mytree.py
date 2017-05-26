@@ -48,10 +48,11 @@ class Tree:
                 node = None if value is None else Tree(value)
                 if depth > 0:
                     parent = previous_level[int(index / 2)]
-                    if (index % 2) == 0:
-                        parent.left = node
-                    else:
-                        parent.right = node
+                    if parent is not None:
+                        if (index % 2) == 0:
+                            parent.left = node
+                        else:
+                            parent.right = node
                 else:
                     head = node
                 current_level.append(node)

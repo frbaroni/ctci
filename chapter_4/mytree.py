@@ -1,13 +1,16 @@
 class Tree:
-    def __init__(s, value):
-        s.value = value
-        s.left = None
-        s.right = None
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+        self.parent = None
 
     def insert(self, value):
         def put(current, value):
             if current is None:
-                return Tree(value)
+                node = Tree(value)
+                node.parent = self
+                return node
             else:
                 current.insert(value)
                 return current
@@ -16,6 +19,19 @@ class Tree:
             self.right = put(self.right, value)
         else:
             self.left = put(self.left, value)
+
+    def find(self, pred):
+        def do(node):
+            if node is None:
+                return None
+            elif pred(node):
+                return node
+            else:
+                return do(node.left) or do(node.right)
+        return do(self)
+
+    def findByValue(self, value):
+        return self.find(lambda node: node.value == value)
 
     def to_tuple(self):
         def fill(node):
@@ -53,6 +69,7 @@ class Tree:
                             parent.left = node
                         else:
                             parent.right = node
+                        node.parent = parent
                 else:
                     head = node
                 current_level.append(node)

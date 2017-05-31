@@ -1,5 +1,6 @@
 import unittest
 import copy
+import collections
 from mytree import Tree
 
 def buildOrder(projects, deps):
@@ -8,22 +9,21 @@ def buildOrder(projects, deps):
     for (dependency, dependent) in deps:
         reqs[dependent].append(dependency)
         dependents[dependency].append(dependent)
+    independents = [p for p in projects if not reqs[p]]
+    queue = collections.deque(independents)
     order = []
-    while len(reqs) > 0:
-        found = False
-        for p in projects:
-            if not p in reqs:
-                continue
-            if len(reqs[p]) == 0:
-                order.append(p)
-                for d in dependents[p]:
-                    reqs[d].remove(p)
-                found = True
-                reqs.pop(p)
-                break
-        if not found:
-            return None
-    return order
+    while queue:
+        p = queue.popleft()
+        order.append(p)
+        for d in projects:
+            if d in dependents[p]:
+                reqs[d].remove(p)
+                if not reqs[d]:
+                    queue.append(d)
+    if len(projects) == len(order):
+        return order
+    else:
+        return None
             
 
 class Playground(unittest.TestCase):
@@ -37,6 +37,21 @@ class Playground(unittest.TestCase):
                 ('d', 'c'),
                 ]
         output = ['e', 'f', 'a', 'b', 'd', 'c']
+
+        self.assertEqual(buildOrder(projects, deps), output)
+
+    def test_build_order_invalid(self):
+        projects = ['a', 'b', 'c', 'd', 'e', 'f']
+        deps = [
+                ('a', 'd'),
+                ('f', 'b'),
+                ('b', 'd'),
+                ('f', 'a'),
+                ('d', 'c'),
+                ('f', 'a'),
+                ('e', 'b'),
+                ]
+        output = None
 
         self.assertEqual(buildOrder(projects, deps), output)
 

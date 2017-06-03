@@ -63,13 +63,14 @@ class Tree:
             for (index, value) in enumerate(level):
                 node = None if value is None else Tree(value)
                 if depth > 0:
-                    parent = previous_level[int(index / 2)]
-                    if parent is not None:
-                        if (index % 2) == 0:
-                            parent.left = node
-                        else:
-                            parent.right = node
-                        node.parent = parent
+                    if node:
+                        parent = previous_level[int(index / 2)]
+                        if parent is not None:
+                            if (index % 2) == 0:
+                                parent.left = node
+                            else:
+                                parent.right = node
+                            node.parent = parent
                 else:
                     head = node
                 current_level.append(node)

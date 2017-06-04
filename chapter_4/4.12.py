@@ -1,7 +1,8 @@
 import unittest
+from collections import defaultdict
 from mytree import Tree
 
-def countSumTo(head, sumTo):
+def countSumToBruteforce(head, sumTo):
     def sub(node, current_sum, total_sum):
         if node:
             value = current_sum + node.value
@@ -10,11 +11,34 @@ def countSumTo(head, sumTo):
             total_sum = sub(node.left, value, total_sum)
             total_sum = sub(node.right, value, total_sum)
             if head != node:
-                total_sub_sum = countSumTo(node, sumTo)
+                total_sub_sum = countSumToBruteforce(node, sumTo)
                 total_sum += total_sub_sum
         return total_sum
 
     return sub(head, 0, 0)
+
+def countSumToMemoized(head, sumTo):
+    def sub(node, current_sum, path_sums):
+        if not node:
+            return 0
+
+        current_sum += node.value
+        wanted_sum = current_sum - sumTo
+        total_sum = path_sums.get(wanted_sum, 0)
+
+        if current_sum == sumTo:
+            total_sum += 1
+
+        path_sums[current_sum] += 1
+
+        total_sum += sub(node.left, current_sum, path_sums)
+        total_sum += sub(node.right, current_sum, path_sums)
+
+        path_sums[current_sum] -= 1
+
+        return total_sum
+
+    return sub(head, 0, defaultdict(lambda: 0))
 
 class Playground(unittest.TestCase):
     def setUp(self):
@@ -30,14 +54,24 @@ class Playground(unittest.TestCase):
                 [3, -2, None, 1, None, None, None, None]
                 ])
 
-    def test_A5(self):
-        self.assertEqual(countSumTo(self.A, 5), 2)
+    def test_A5_Bruteforce(self):
+        self.assertEqual(countSumToBruteforce(self.A, 5), 2)
 
-    def test_A7(self):
-        self.assertEqual(countSumTo(self.A, 7), 2)
+    def test_A7_Bruteforce(self):
+        self.assertEqual(countSumToBruteforce(self.A, 7), 2)
 
-    def test_B8(self):
-        self.assertEqual(countSumTo(self.B, 8), 3)
+    def test_B8_Bruteforce(self):
+        self.assertEqual(countSumToBruteforce(self.B, 8), 3)
+
+    def test_A5_Memoized(self):
+        self.assertEqual(countSumToMemoized(self.A, 5), 2)
+
+    def test_A7_Memoized(self):
+        self.assertEqual(countSumToMemoized(self.A, 7), 2)
+
+    def test_B8_Memoized(self):
+        self.assertEqual(countSumToMemoized(self.B, 8), 3)
+
 
 if __name__ == '__main__':
     unittest.main()
